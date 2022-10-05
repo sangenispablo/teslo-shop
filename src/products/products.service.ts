@@ -47,17 +47,36 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      product = await this.productRepository.findOneBy({ slug: term });
+      // product = await this.productRepository.findOneBy({ slug: term });
+      const queryBuilder = this.productRepository.createQueryBuilder();
+      product = await queryBuilder
+        .where('upper(title) = :title or slug = :slug', {
+          title: term.toUpperCase(),
+          slug: term.toLowerCase(),
+        })
+        .getOne();
     }
-
     if (!product) {
       throw new NotFoundException(`Product with id ${term} not found`);
     }
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    // Esto es tremendo por que precarga product con el DTO y recien lo mando a guardar
+    const product = await this.productRepository.preload({
+      id: id,
+      ...updateProductDto,
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with id: ${id} not found`);
+    }
+    try {
+      await this.productRepository.save(product);
+      return product;
+    } catch (error) {
+      this.handleDBException(error);
+    }
   }
 
   async remove(id: string) {

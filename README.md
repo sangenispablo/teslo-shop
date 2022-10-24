@@ -22,7 +22,11 @@ y renombrar a
 ```
 docker-compose up -d
 ```
-6. Levantar en dev con 
+6. Si quiere generar datos puede usar el siguiente endpoint para generar los datos de prueba
+```
+http://localhost:3000/api/seed
+```
+7. Levantar en dev con 
 ```
 yarn start:dev
 ```

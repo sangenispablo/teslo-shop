@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { v4 as uuid } from 'uuid';
+
 export const fileNamer = (
   req: Express.Request,
   file: Express.Multer.File,
@@ -6,6 +8,6 @@ export const fileNamer = (
 ) => {
   if (!file) return cb(new Error('File is empty'), false);
   const fileExt = file.mimetype.split('/')[1];
-  const fileName = `holamundo.${fileExt}`;
+  const fileName = `${uuid()}.${fileExt}`;
   cb(null, fileName);
 };

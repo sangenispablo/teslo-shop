@@ -1,9 +1,10 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
   // esto le antepone a todos mis endpoints el /api/
   app.setGlobalPrefix('api');
   // esto configura de forma global la validacion con los Pipes en los DTOs
@@ -19,6 +20,6 @@ async function bootstrap() {
     }),
   );
   await app.listen(process.env.PORT);
-  console.log(`App running on port ${process.env.PORT}`);
+  logger.log(`App running on port ${process.env.PORT}`);
 }
 bootstrap();
